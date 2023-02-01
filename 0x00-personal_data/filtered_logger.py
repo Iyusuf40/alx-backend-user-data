@@ -7,5 +7,5 @@ import re
 
 def filter_datum(fields, redaction, message, separator) -> str:
     """ filter_datum doc str """
-    pat = '(?P<nm>' + '=|'.join(fields) + '=)' + f'[^{separator}]+'
-    return re.sub(pat, r"\g<nm>{}".format(redaction), message)
+    pat = '(?P<nm>' + '=|'.join(fields) + '=)' + f'[^{separator}]+{separator}'
+    return re.sub(pat, r"\g<nm>{}{}".format(redaction, separator), message)

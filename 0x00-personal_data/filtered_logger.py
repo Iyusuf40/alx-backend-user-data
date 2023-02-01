@@ -7,7 +7,5 @@ from typing import List
 def filter_datum(fields: List[str], redaction: str,
                  message: str, separator: str) -> str:
     """ filter_datum doc str """
-    for f in fields:
-        message = re.sub(f'{f}=.*?{separator}',
-                         f'{f}={redaction}{separator}', message)
-    return message
+    pat = '(?P<nm>' + '=|'.join(fields) + '=)' + f'[^{separator}]+{separator}'
+    return re.sub(pat, r"\g<nm>{}{}".format(redaction, separator), message)

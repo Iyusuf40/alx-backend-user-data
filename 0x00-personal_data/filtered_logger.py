@@ -3,6 +3,8 @@
 import re
 from typing import List
 import logging
+import os
+import mysql.connector
 
 
 PII_FIELDS = ("name", "email", "phone", "ssn", "password")
@@ -26,6 +28,22 @@ def get_logger() -> logging.Logger:
     logger.addHandler(stream_handler)
 
     return logger
+
+
+def get_db() -> mysql.connector.connection.MySQLConnection:
+    """ returns a connection object to a mysql db """
+    u_name = os.environ.get("PERSONAL_DATA_DB_USERNAME", "root")
+    passwd = os.environ.get("PERSONAL_DATA_DB_PASSWORD", "")
+    host = os.environ.get("PERSONAL_DATA_DB_HOST", "localhost")
+    db = os.environ.get("PERSONAL_DATA_DB_NAME")
+
+    c = mysql.connector.connection.MySQLConnection(
+            user=u_name,
+            password=passwd,
+            host=host,
+            database=db
+        )
+    return c
 
 
 class RedactingFormatter(logging.Formatter):

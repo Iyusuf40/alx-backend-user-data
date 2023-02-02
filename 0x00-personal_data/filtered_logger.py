@@ -85,8 +85,7 @@ def main() -> None:
         str_ = ''
         for key in dct:
             str_ += key + '=' + str(dct[key]) + ';'
-        # print(str_)
-        log_record = logging.LogRecord("my_logger", logging.INFO,
+        log_record = logging.LogRecord("user_data", logging.INFO,
                                        None, None, str_, None, None)
         formatter = RedactingFormatter(fields=list(keys)[:5])
         print(formatter.format(log_record))

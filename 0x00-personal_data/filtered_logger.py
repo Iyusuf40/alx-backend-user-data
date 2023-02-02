@@ -64,3 +64,35 @@ class RedactingFormatter(logging.Formatter):
             self.fields, self.REDACTION, record.msg, self.SEPARATOR
             )
         return super().format(record)
+
+
+def main() -> None:
+    """ main func """
+    con = get_db()
+    cursor = con.cursor()
+    query = "SELECT * FROM users;"
+    cursor.execute(query)
+    keys = (
+        'name', 'email', 'phone', 'ssn', 'password', 'ip',
+        'last_login', 'user_agent'
+    )
+    for row in cursor:
+        dct = {}
+        i = 0
+        for itm in keys:
+            dct[itm] = row[i]
+            i += 1
+        str_ = ''
+        for key in dct:
+            str_ += key + '=' + str(dct[key]) + ';'
+        # print(str_)
+        log_record = logging.LogRecord("my_logger", logging.INFO,
+                                       None, None, str_, None, None)
+        formatter = RedactingFormatter(fields=list(keys)[:5])
+        print(formatter.format(log_record))
+    cursor.close()
+    con.close()
+
+
+if __name__ == "__main__":
+    main()

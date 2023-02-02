@@ -76,6 +76,7 @@ def main() -> None:
         'name', 'email', 'phone', 'ssn', 'password', 'ip',
         'last_login', 'user_agent'
     )
+    logger = get_logger()
     for row in cursor:
         dct = {}
         i = 0
@@ -85,10 +86,11 @@ def main() -> None:
         str_ = ''
         for key in dct:
             str_ += key + '=' + str(dct[key]) + ';'
-        log_record = logging.LogRecord("user_data", logging.INFO,
-                                       None, None, str_, None, None)
-        formatter = RedactingFormatter(fields=list(keys)[:5])
-        print(formatter.format(log_record))
+        # log_record = logging.LogRecord("user_data", logging.INFO,
+        #                                None, None, str_, None, None)
+        # formatter = RedactingFormatter(fields=list(keys)[:5])
+        # print(formatter.format(log_record))
+        logger.info(str_)
     cursor.close()
     con.close()
 

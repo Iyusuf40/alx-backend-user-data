@@ -5,6 +5,7 @@ Auth class defined here
 from flask import abort, request
 from typing import List, TypeVar
 from models.user import User
+import re
 
 
 class Auth:
@@ -20,7 +21,9 @@ class Auth:
         if path[-1] != '/':
             path = path + '/'
         for pth in excluded_paths:
-            if path == pth:
+            if pth[-1] == '*':
+                pth = pth[:-1] + '.*'
+            if re.fullmatch(pth, path):
                 return False
 
         return True

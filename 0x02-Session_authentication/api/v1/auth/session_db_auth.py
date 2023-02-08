@@ -66,8 +66,11 @@ class SessionDBAuth(SessionExpAuth):
             return False
 
         UserSession.load_from_file()
-        user_session = UserSession.search({
+        user_sessions = UserSession.search({
             'session_id': sess_id
-        })[0]
+        })
+        if not user_sessions:
+            return False
+        user_session = user_sessions[0]
         user_session.remove()
         return True

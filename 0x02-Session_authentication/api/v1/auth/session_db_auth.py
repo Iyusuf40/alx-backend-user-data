@@ -49,6 +49,7 @@ class SessionDBAuth(SessionExpAuth):
         live_time = datetime.timedelta(seconds=self.session_duration)
 
         if now > sess_creation_time + live_time:
+            user_session.remove()
             return None
 
         return user_id

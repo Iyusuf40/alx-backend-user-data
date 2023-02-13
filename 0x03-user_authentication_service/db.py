@@ -1,11 +1,12 @@
 #!/usr/bin/env python3
 """DB module
 """
+import bcrypt
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.orm.session import Session
-from typing import TypeVar, Type
+from typing import TypeVar, Type, Mapping
 from sqlalchemy.orm.exc import NoResultFound
 from sqlalchemy.exc import InvalidRequestError
 
@@ -40,7 +41,7 @@ class DB:
         self._session.commit()
         return user
 
-    def find_user_by(self, **kw) -> User:
+    def find_user_by(self, **kw: Mapping) -> User:
         ''' searches for user by kw '''
         user = None
         query = self._session.query(User)
@@ -77,3 +78,14 @@ class DB:
         if searched is False:
             raise InvalidRequestError
         return all_users[0]
+
+    def update_user(self, user_id: int, **kw: Mapping) -> None:
+        """ updates a user """
+        valid_keys = ['email', 'id', 'hashed_password',
+                      'session_id', 'reset_token']
+        user = self.find_user_by(id=user_id)
+        for key in kw:
+            if key not in valid_keys:
+                raise ValueError
+            user.__setattr__(key, kw[key])
+        self._session.commit()

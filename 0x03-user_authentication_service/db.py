@@ -6,6 +6,8 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.orm.session import Session
 from typing import TypeVar, Type
+from sqlalchemy.orm.exc import NoResultFound
+from sqlalchemy.exc import InvalidRequestError
 
 from user import Base, User
 
@@ -37,3 +39,41 @@ class DB:
         self._session.add(user)
         self._session.commit()
         return user
+
+    def find_user_by(self, **kw) -> User:
+        ''' searches for user by kw '''
+        user = None
+        query = self._session.query(User)
+        searched = False
+        for key in kw:
+            if key == 'email':
+                query = query.filter(
+                            User.email == kw[key]
+                            )
+                searched = True
+            elif key == 'id':
+                query = query.filter(
+                            User.id == kw[key]
+                            )
+                searched = True
+            elif key == 'hashed_password':
+                query = query.filter(
+                            User.hashed_password == kw[key]
+                            )
+                searched = True
+            elif key == 'session_id':
+                query = query.filter(
+                            User.session_id == kw[key]
+                            )
+                searched = True
+            elif key == 'reset_token':
+                query = query.filter(
+                            User.reset_token == kw[key]
+                            )
+                searched = True
+        all_users = query.all()
+        if not all_users:
+            raise NoResultFound
+        if searched is False:
+            raise InvalidRequestError
+        return all_users[0]

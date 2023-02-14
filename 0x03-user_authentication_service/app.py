@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """ basic flask app """
 
-from flask import Flask, jsonify, request, abort, redirect
+from flask import Flask, jsonify, request, abort, redirect, url_for
 from auth import Auth
 
 
@@ -53,7 +53,7 @@ def login():
         abort(403)
 
     AUTH.destroy_session(sess_id)
-    return redirect('/')
+    return redirect(url_for('index'))
 
 
 if __name__ == "__main__":

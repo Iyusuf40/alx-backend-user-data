@@ -41,63 +41,49 @@ class DB:
         self._session.commit()
         return user
 
-    def find_user_by(self, **kw: Dict[str, str]) -> User:
-        ''' searches for user by kw '''
-        if not kw:
+    def find_user_by(self, **kwargs: Dict[str, str]) -> User:
+        ''' searches for user by kwargs '''
+        if not kwargs:
             raise InvalidRequestError
-
-        column_names = User.__table__.columns.keys()
-        for key in kw.keys():
-            if key not in column_names:
+        valid_keys = ['email', 'id', 'hashed_password',
+                      'session_id', 'reset_token']
+        query = self._session.query(User)
+        for key in kwargs:
+            if key == 'email':
+                query = query.filter(
+                            User.email == kwargs[key]
+                            )
+            elif key == 'id':
+                query = query.filter(
+                            User.id == kwargs[key]
+                            )
+            elif key == 'hashed_password':
+                query = query.filter(
+                            User.hashed_password == kwargs[key]
+                            )
+            elif key == 'session_id':
+                query = query.filter(
+                            User.session_id == kwargs[key]
+                            )
+            elif key == 'reset_token':
+                query = query.filter(
+                            User.reset_token == kwargs[key]
+                            )
+        all_users = query.all()
+        for key in kwargs:
+            if key not in valid_keys:
                 raise InvalidRequestError
-
-        user = self._session.query(User).filter_by(**kw).first()
-
-        if user is None:
+        if not all_users:
             raise NoResultFound
+        return all_users[0]
 
-        return user
-        # if not kw:
-        #     raise InvalidRequestError
-        # valid_keys = ['email', 'id', 'hashed_password',
-        #               'session_id', 'reset_token']
-        # query = self._session.query(User)
-        # for key in kw:
-        #     if key == 'email':
-        #         query = query.filter(
-        #                     User.email == kw[key]
-        #                     )
-        #     elif key == 'id':
-        #         query = query.filter(
-        #                     User.id == kw[key]
-        #                     )
-        #     elif key == 'hashed_password':
-        #         query = query.filter(
-        #                     User.hashed_password == kw[key]
-        #                     )
-        #     elif key == 'session_id':
-        #         query = query.filter(
-        #                     User.session_id == kw[key]
-        #                     )
-        #     elif key == 'reset_token':
-        #         query = query.filter(
-        #                     User.reset_token == kw[key]
-        #                     )
-        # all_users = query.all()
-        # for key in kw:
-        #     if key not in valid_keys:
-        #         raise InvalidRequestError
-        # if not all_users:
-        #     raise NoResultFound
-        # return all_users[0]
-
-    def update_user(self, user_id: int, **kw: Mapping) -> None:
+    def update_user(self, user_id: int, **kwargs: Mapping) -> None:
         """ updates a user """
         valid_keys = ['email', 'id', 'hashed_password',
                       'session_id', 'reset_token']
         user = self.find_user_by(id=user_id)
-        for key in kw:
+        for key in kwargs:
             if key not in valid_keys:
                 raise ValueError
-            user.__setattr__(key, kw[key])
+            user.__setattr__(key, kwargs[key])
         self._session.commit()

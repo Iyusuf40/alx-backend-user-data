@@ -43,11 +43,11 @@ class DB:
 
     def find_user_by(self, **kw: Dict[str, str]) -> User:
         ''' searches for user by kw '''
+        if not kw:
+            raise InvalidRequestError
         valid_keys = ['email', 'id', 'hashed_password',
                       'session_id', 'reset_token']
-        user = None
         query = self._session.query(User)
-        searched = False
         for key in kw:
             if key == 'email':
                 query = query.filter(

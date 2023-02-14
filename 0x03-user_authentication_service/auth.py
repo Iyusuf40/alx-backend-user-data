@@ -8,7 +8,12 @@ import uuid
 
 def _hash_password(password: str) -> bytes:
     """ returns a passwd hash """
-    return bcrypt.hashpw(bytes(password, 'utf-8'), bcrypt.gensalt())
+    return bcrypt.hashpw(bytes(password, 'utf-8'), bcrypt.gensalt(4))
+
+
+def _generate_uuid() -> str:
+    """ returns a uuid4 str """
+    return str(uuid.uuid4())
 
 
 class Auth:
@@ -43,15 +48,11 @@ class Auth:
         except Exception:
             return False
 
-    def _generate_uuid(self) -> str:
-        """ returns a uuid4 str """
-        return str(uuid.uuid4())
-
     def create_session(self, email: str) -> str:
         """ creates a new session for user with email """
         try:
             user = self._db.find_user_by(email=email)
-            s_id = self._generate_uuid()
+            s_id = _generate_uuid()
             self._db.update_user(user.id, session_id=s_id)
             return s_id
         except Exception:

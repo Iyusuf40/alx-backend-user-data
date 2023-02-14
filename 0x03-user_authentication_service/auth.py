@@ -6,7 +6,7 @@ from user import User
 import uuid
 
 
-def _hash_password(password: str) -> bytes:
+def _hash_password(password: str) -> str:
     """ returns a passwd hash """
     return bcrypt.hashpw(bytes(password, 'utf-8'), bcrypt.gensalt(4))
 

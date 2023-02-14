@@ -73,10 +73,10 @@ class DB:
                             )
                 searched = True
         all_users = query.all()
-        if not all_users:
-            raise NoResultFound
         if searched is False:
             raise InvalidRequestError
+        if not all_users:
+            raise NoResultFound
         return all_users[0]
 
     def update_user(self, user_id: int, **kw: Mapping) -> None:

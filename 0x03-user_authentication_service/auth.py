@@ -6,9 +6,10 @@ from user import User
 import uuid
 
 
-def _hash_password(password: str) -> str:
+def _hash_password(password: str) -> bytes:
     """ returns a passwd hash """
-    return bcrypt.hashpw(bytes(password, 'utf-8'), bcrypt.gensalt(4))
+    h_psw = bcrypt.hashpw(bytes(password, 'utf-8'), bcrypt.gensalt(4))
+    return h_psw
 
 
 def _generate_uuid() -> str:

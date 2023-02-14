@@ -43,6 +43,8 @@ class DB:
 
     def find_user_by(self, **kw: Mapping) -> User:
         ''' searches for user by kw '''
+        valid_keys = ['email', 'id', 'hashed_password',
+                      'session_id', 'reset_token']
         user = None
         query = self._session.query(User)
         searched = False
@@ -51,30 +53,26 @@ class DB:
                 query = query.filter(
                             User.email == kw[key]
                             )
-                searched = True
             elif key == 'id':
                 query = query.filter(
                             User.id == kw[key]
                             )
-                searched = True
             elif key == 'hashed_password':
                 query = query.filter(
                             User.hashed_password == kw[key]
                             )
-                searched = True
             elif key == 'session_id':
                 query = query.filter(
                             User.session_id == kw[key]
                             )
-                searched = True
             elif key == 'reset_token':
                 query = query.filter(
                             User.reset_token == kw[key]
                             )
-                searched = True
         all_users = query.all()
-        if searched is False:
-            raise InvalidRequestError
+        for key in kw:
+            if key not in valid_keys:
+                raise InvalidRequestError
         if not all_users:
             raise NoResultFound
         return all_users[0]

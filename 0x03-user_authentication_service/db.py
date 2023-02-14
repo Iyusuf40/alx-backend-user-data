@@ -73,8 +73,8 @@ class DB:
                             )
                 searched = True
         all_users = query.all()
-        if searched is False:
-            raise InvalidRequestError
+        # if searched is False:
+        #     raise InvalidRequestError
         if not all_users:
             raise NoResultFound
         return all_users[0]

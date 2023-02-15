@@ -95,3 +95,9 @@ class Auth:
         hashed_p = _hash_password(password)
         self._db.update_user(user.id, hashed_password=hashed_p,
                              reset_token=None)
+
+    def _hash_password(self, password: str) -> bytes:
+        """ returns a passwd hash """
+        h_psw = bcrypt.hashpw(bytes(password,
+                              'utf-8'), bcrypt.gensalt(4))
+        return h_psw

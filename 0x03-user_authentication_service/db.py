@@ -44,7 +44,7 @@ class DB:
     def find_user_by(self, **kwargs: Dict[str, str]) -> User:
         ''' searches for user by kwargs '''
         if not kwargs:
-            raise InvalidRequestError
+            raise NoResultFound
         valid_keys = ['email', 'id', 'hashed_password',
                       'session_id', 'reset_token']
         query = self._session.query(User)

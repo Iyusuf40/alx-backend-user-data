@@ -77,7 +77,7 @@ class DB:
             raise NoResultFound
         return all_users[0]
 
-    def update_user(self, user_id: int, **kwargs: Mapping) -> None:
+    def update_user(self, user_id: int, *args, **kwargs) -> None:
         """ updates a user """
         valid_keys = ['email', 'id', 'hashed_password',
                       'session_id', 'reset_token']

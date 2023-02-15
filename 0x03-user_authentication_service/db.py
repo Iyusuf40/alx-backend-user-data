@@ -41,7 +41,7 @@ class DB:
         self._session.commit()
         return user
 
-    def find_user_by(self, **kwargs: Dict[str, str]) -> User:
+    def find_user_by(self, *args, **kwargs: Dict[str, str]) -> User:
         ''' searches for user by kwargs '''
         if not kwargs:
             raise NoResultFound

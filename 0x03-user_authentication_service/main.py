@@ -17,7 +17,6 @@ def register_user(email: str, password: str) -> None:
     data = {"email": email, "password": password}
     url = base_url + "users"
     r = requests.post(url, data=data)
-    # print(r.status_code)
     assert 200 == r.status_code
     assert {"email": email, "message": "user created"} == r.json()
 
@@ -41,13 +40,9 @@ def profile_unlogged() -> None:
 
 def log_in(email: str, password: str) -> str:
     """test login"""
-    # first register user
-    url = base_url + "users"
-    data = {"email": email, "password": password}
-    r = requests.post(url, data)
-
     # get session_id
     url = base_url + "sessions"
+    data = {"email": email, "password": password}
     r = requests.post(url, data)
     cookie = r.cookies["session_id"]
     assert 200 == r.status_code
